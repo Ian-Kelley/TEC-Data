@@ -53,6 +53,6 @@ dtec = data['dtec']
 #numpy.save('tec', tec)
 #numpy.save('dtec', dtec)
 print("saving to compressed .npz file format")
-numpy.savez_compressed('20171019.npz', tec=tec, dtec=dtec)
+numpy.savez_compressed(startyear + startmonth + startday + '.npz', tec=tec, dtec=dtec)
 
 os.remove(tempfilename)
