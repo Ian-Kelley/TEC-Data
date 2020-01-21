@@ -13,8 +13,7 @@ username = "Ian Kelley"
 email = "ikelley@vt.edu"
 affiliation = "Virginia Tech"
 instrument = 8000 #TEC instruments
-kindat = 3500
-category = 1 #file to download
+
 
 
 startyear = '2017'
@@ -24,20 +23,13 @@ starthour = '0'
 startmin = '0'
 startsec = '0'
 
+
 MadrigalData = MadrigalData(url)
 experimentarray = MadrigalData.getExperiments(instrument, startyear, startmonth, startday, starthour, startmin, startsec, startyear, startmonth, startday, starthour, startmin, startsec, 1)
 
 print("Downloading: ", startyear, startmonth, startday)
-filearray = MadrigalData.getExperimentFiles(experimentarray[0].id, getNonDefault=False)
-j = 0
-while j < len(filearray) - 1:
-    if filearray[0].kindat == kindat:
-        if filearray[0].category == category:
-            filename = filearray[0].name
-            print("correct file found: final version, 1X1 degree binned 5mins")
-            break
-        j = j + 1
-MadrigalData.downloadFile(filename, '/home/ian/TEC/tempfile.hdf5', username, email, affiliation, format='hdf5')
+filearray = MadrigalData.getExperimentFiles(experimentarray[1].id, getNonDefault=False) #need to use index 1 since madrigal returns the previos day at index 0 
+MadrigalData.downloadFile(filearray[0].name, '/home/ian/TEC/tempfile.hdf5', username, email, affiliation, format='hdf5')
 print("raw hdf5 file downloaded successfully")
 
         
