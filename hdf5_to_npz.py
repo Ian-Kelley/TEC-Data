@@ -24,10 +24,6 @@ starthour = '0'
 startmin = '0'
 startsec = '0'
 
-#Note: Date actually uses previous day, so 10/20/2017 would actually get 10/19/2017 for example
-
-
-
 MadrigalData = MadrigalData(url)
 experimentarray = MadrigalData.getExperiments(instrument, startyear, startmonth, startday, starthour, startmin, startsec, startyear, startmonth, startday, starthour, startmin, startsec, 1)
 
