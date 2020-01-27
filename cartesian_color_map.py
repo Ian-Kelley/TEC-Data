@@ -9,6 +9,7 @@ import numpy.ma as ma
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+import cartopy.crs as ccrs
 
 #Specify date here, 10/20/17 is already in the github repo, else download the date with hdf5_to_npz.py
 year = '2017'
@@ -34,12 +35,21 @@ with np.load(year + month + day + '.npz') as data:
     Z = tec[:,:,time]
     Zm = ma.masked_where(np.isnan(Z),Z)#masks NaNs to display as white on plot
     
-    plt.pcolormesh(Zm)
-    plt.xticks([])
-    plt.yticks([])
-    plt.xlim((0, 359))
-    plt.ylim((0, 179))
+    
+    lon = np.linspace(-180, 180, 360)
+    lat = np.linspace(-90, 90, 180)
+    
+    
+    plt.figure(figsize=(11, 8))
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    ax.set_global()
+    
+    #uncomment the following line for geographic projection (I'm not sure if it's accurate)
+    #ax.coastlines()
+    
+
+    ax.pcolormesh(lon, lat, Zm, cmap='jet', vmax=30)
     plt.title('Global Total Electron Content for ' + month + '/' + day + '/' + year + ' at ' + uthour + ':' + utminute + ' UT')
     plt.show()
-
+    
 
