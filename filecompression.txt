@@ -1,0 +1,52 @@
+
+File Compression for different formats of 10/20/2017 Madrigal binned TEC data
+
+*All data files have been limited to hour, minute, longitude, latitude, TEC, and DTEC parameters*
+When possible, I tried to save only TEC and DTEC matricies, with the indexes representing Lat, Lon, and time
+
+
+Raw text files:
+
+.txt file: 256.0 MB
+
+.txt.gz file: 19.5 MB
+
+.txt.bz2 file: 12.1 MB
+
+.txt.zip file: 19.5 MB
+
+
+
+
+HDF5:
+
+.hdf5 file (straight from madrigal, without eliminating parameters, contiguous, precompressed:  39.7 MB (far shorter to download since no conversion)
+
+.hdf5 file converted to only desired parameters, contiguous, gzip compression, sorted by compression factor: 
+
+	0 (lowest compression factor): 161.7 MB     (takes only a few seconds to convert)
+	4 (default): 20.9 MB                       (takes about a minute to convert)
+	9 (highest compression factor): 19.0 MB    (takes a few minutes to convert)
+
+
+.hdf5 file converted to only desired parameters, contiguous, lzf compression: 32.3 MB
+
+*chunking the HDF5 file didn't really provide any increase in compression
+
+
+
+NetCDF4: 50 MB
+* I didn't spend too much time working with this format as it was already larger then the HDF5 and is harder to access with madrigal
+
+
+
+
+Numpy native file format .npz: 166 MB (uncompressed)
+
+Numpy native file format, .npz: 10.8 MB (compressed)
+
+
+
+For refrence, the IDL generated .dat.zip file for 10/19/17 in SuperDARN TEC data is 8.2 MB
+
+
