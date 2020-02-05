@@ -8,7 +8,7 @@ import numpy.ma as ma
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import gc
-from PIL import Image, ImageDraw
+from PIL import Image
 
 #Specify date here, 10/20/17 is already in the github repo, else download the date with hdf5_to_npz.py
 year = '2017'
@@ -64,8 +64,12 @@ with np.load(year + month + day + '.npz') as data:
         del Zm
         images.append(Image.open(str(time) + '.png'))
         
-        os.remove(str(time)+'.png')
+        
         time = time + 1
         
     images[0].save('tec1.gif',save_all=True, append_images=images[1:], optimize=True)
     del images
+    i = 0
+    while i < 288:
+        os.remove(str(i) + '.png')
+        i = i + 1
