@@ -1,15 +1,10 @@
-#initial attempt at plotting data from npz format using matplotlib
-#this uses pcolormesh command, as opposed to contour or imshow
-#(I thought this method looked the best of all of them)
-#rectangular and polar plots generated
-
 import os
 import numpy as np
-import numpy.ma as ma
-import matplotlib
+
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
 import cartopy.crs as ccrs
+
+from scipy.interpolate import griddata
 
 #Specify date here, 10/20/17 is already in the github repo, else download the date with hdf5_to_npz.py
 year = '2017'
@@ -26,14 +21,25 @@ if (utminute < 10):
     utminute = '0' + str(utminute)
 else:
     utminute = str(utminute)
+intfactor = 7 #number of points needed in 3x3x3 matrix surrounding a given point to be interpolated
 
-
+def interpolate(X, tec, time, factor):
+    for index in np.ndindex(X.shape):
+        if np.isnan(X[index]):
+            Y = tec[(index[0] - 1):(index[0] + 2), (index[1] - 1) : (index[1] + 2), time - 1: time + 2]
+            if np.count_nonzero(~np.isnan(Y)) > factor:
+                X[index] = np.nanmedian(Y)
+    return X        
+    
 #actual plotting of TEC data
 with np.load(year + month + day + '.npz') as data:
     tec = data['tec']
     dtec = data['dtec']
+
     Z = tec[:,:,time]
-    Zm = ma.masked_where(np.isnan(Z),Z)#masks NaNs to display as white on plot
+    Z = interpolate(Z, tec, time, intfactor)
+    #Zm = ma.masked_where(np.isnan(Z),Z)#masks NaNs to display as white on plot
+    
     
     
     lon = np.linspace(-180, 180, 360)
@@ -45,11 +51,11 @@ with np.load(year + month + day + '.npz') as data:
     ax.set_global()
     
     #uncomment the following line for geographic projection (I'm not sure if it's accurate)
-    #ax.coastlines()
-    
+    ax.coastlines()
+    Z = interpolate(Z, tec, time, 4)
+    mesh = ax.pcolormesh(lon, lat, Z, cmap='jet', vmax=30)
+    clrbar = plt.colorbar(mesh, shrink=0.5)
+    clrbar.set_label('Total Electron Content (TECU)')
 
-    ax.pcolormesh(lon, lat, Zm, cmap='jet', vmax=30)
     plt.title('Global Total Electron Content for ' + month + '/' + day + '/' + year + ' at ' + uthour + ':' + utminute + ' UT')
     plt.show()
-    
-
